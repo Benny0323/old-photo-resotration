@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="90 张长征老照片原图、AI 修复对比、故事解读与在线展示网站。" />
+    <title>老照片修复展示 | 90 张历史影像</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero__media" aria-hidden="true"></div>
+      <nav class="topbar" aria-label="页面导航">
+        <a href="#gallery" class="brand">老照片修复展示</a>
+        <div>
+          <a href="#project">联合项目</a>
+          <a href="#curated">精选展线</a>
+          <a href="#timeline">时间轴</a>
+          <a href="#gallery">图库</a>
+          <a href="#story-lab">AI 解读</a>
+          <button id="random-photo" type="button">随机档案</button>
+        </div>
+      </nav>
+
+      <section class="hero__content">
+        <p class="eyebrow">Historical Photo Restoration Archive</p>
+        <h1>南京大学 × 东南大学老照片 AI 修复联合项目</h1>
+        <p>
+          面向历史影像保护、数字人文展示与智能图像修复的在线展陈平台。系统收录 90 张珍贵老照片，提供原图浏览、AI 增强修复、对比滑杆、故事解读、修复图下载与可部署在线访问能力。
+        </p>
+        <div class="hero__actions">
+          <a href="#gallery" class="primary-action">浏览 90 张图片</a>
+        </div>
+        <dl class="hero__stats" aria-label="项目统计">
+          <div>
+            <dt id="total-count">90</dt>
+            <dd>本地原图</dd>
+          </div>
+          <div>
+            <dt id="category-count">0</dt>
+            <dd>主题分类</dd>
+          </div>
+          <div>
+            <dt id="favorite-count">0</dt>
+            <dd>已收藏</dd>
+          </div>
+        </dl>
+      </section>
+    </header>
+
+    <main>
+      <section id="project" class="project-intro">
+        <div class="project-copy">
+          <p class="eyebrow">Joint Research Project</p>
+          <h2>高校联合的历史影像数字化保护实践</h2>
+          <p>
+            本项目以珍贵历史照片为研究对象，结合南京大学在人文社科、历史研究与数字人文方面的学术积累，以及东南大学在工程技术、人工智能与图像处理方向的科研优势，探索老照片的数字化整理、智能修复、知识化标注与公众化传播。
+          </p>
+          <p>
+            平台不仅展示修复前后的视觉差异，也尝试把每张照片放回具体的时间、地点、人物与事件脉络中，让观众在观看图像的同时理解其史料价值、情感重量与时代背景。
+          </p>
+        </div>
+        <div class="school-grid" aria-label="合作高校介绍">
+          <article>
+            <span>南京大学</span>
+            <h3>历史研究与数字人文支撑</h3>
+            <p>
+              南京大学作为综合性研究型大学，在历史学、人文社科、档案整理与跨学科研究方面具有深厚基础。本项目中侧重史料脉络梳理、文本解读、知识组织与展陈叙事设计。
+            </p>
+          </article>
+          <article>
+            <span>东南大学</span>
+            <h3>AI 修复与工程技术支撑</h3>
+            <p>
+              东南大学以工科见长，在信息科学、计算机视觉、图像处理与工程系统实现方面具备鲜明优势。本项目中侧重图像增强、交互展示、修复流程设计与在线平台搭建。
+            </p>
+          </article>
+          <article class="wide-card">
+            <span>项目愿景</span>
+            <h3>让历史影像被看见、被理解、被继续研究</h3>
+            <p>
+              通过“原图 - 修复图 - 史料信息 - AI 解读”的多层结构，项目希望建立一个兼具学术性、科技感与公众传播力的红色历史影像展示样板，为后续更大规模的历史照片修复与数字档案建设提供参考。
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section id="curated" class="feature-section curated-section">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Curated Exhibition</p>
+            <h2>重点照片策展模式</h2>
+          </div>
+          <p>
+            从 90 张史料中提取关键节点，形成一条适合汇报、路演和线上展览的精选展线。
+          </p>
+        </div>
+        <div id="curated-track" class="curated-track" aria-live="polite"></div>
+      </section>
+
+      <section id="timeline" class="feature-section timeline-section">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Narrative Timeline</p>
+            <h2>时间轴叙事模式</h2>
+          </div>
+          <p>
+            按年份聚合照片，把零散影像组织成可浏览、可讲述的历史线索。
+          </p>
+        </div>
+        <div id="timeline-view" class="timeline-view" aria-live="polite"></div>
+      </section>
+
+      <section class="toolbar" aria-label="筛选工具">
+        <label class="search">
+          <span>搜索</span>
+          <input id="search-input" type="search" placeholder="标题、地点、来源、标签" autocomplete="off" />
+        </label>
+
+        <label>
+          <span>分类</span>
+          <select id="category-filter">
+            <option value="all">全部分类</option>
+          </select>
+        </label>
+
+        <label>
+          <span>时期</span>
+          <select id="period-filter">
+            <option value="all">全部时期</option>
+          </select>
+        </label>
+
+        <label>
+          <span>标签</span>
+          <select id="tag-filter">
+            <option value="all">全部标签</option>
+          </select>
+        </label>
+
+        <label>
+          <span>排版</span>
+          <select id="layout-filter">
+            <option value="museum">博物馆网格</option>
+            <option value="dense">紧凑墙面</option>
+            <option value="masonry">瀑布流</option>
+            <option value="comparison">对比墙</option>
+          </select>
+        </label>
+
+        <label>
+          <span>排序</span>
+          <select id="sort-filter">
+            <option value="id">档案编号</option>
+            <option value="period">时期</option>
+            <option value="category">分类</option>
+            <option value="title">标题</option>
+          </select>
+        </label>
+
+        <button id="favorite-only" type="button" aria-pressed="false">只看收藏</button>
+        <button id="reset-filters" type="button">重置</button>
+      </section>
+
+      <section class="gallery-head">
+        <div>
+          <p class="eyebrow">Gallery</p>
+          <h2>照片目录</h2>
+        </div>
+        <p id="result-count" class="result-count">正在加载...</p>
+      </section>
+
+      <section id="gallery" class="gallery gallery--museum" aria-live="polite"></section>
+      <section id="empty-state" class="empty-state" hidden>
+        <h2>没有匹配的照片</h2>
+        <p>换一个关键词、清空筛选条件，或者关闭“只看收藏”。</p>
+      </section>
+
+      <section id="story-lab" class="story-lab">
+        <div>
+          <p class="eyebrow">AI Story Lab</p>
+          <h2>AI 解读是什么意思</h2>
+        </div>
+        <p>
+          这里的 AI 解读不是“编一个故事”，也不是替代严肃的史料考证。它的作用是把照片标题、地点、时期、来源和标签组织成一段观众能读懂的讲解词，提示大家先看画面细节，再看资料来源，最后思考这张照片和长征历史之间的关系。
+        </p>
+      </section>
+    </main>
+
+    <dialog id="photo-dialog" class="photo-dialog">
+      <button class="dialog-close" type="button" aria-label="关闭">×</button>
+      <div class="dialog-grid">
+        <section class="viewer-panel" aria-label="原图与修复图对比">
+          <div id="compare-stage" class="compare-stage">
+            <img id="before-image" class="compare-image compare-image--before" alt="" />
+            <img id="after-image" class="compare-image compare-image--after" alt="" />
+            <span class="compare-label compare-label--before">原图</span>
+            <span class="compare-label compare-label--after">AI 修复</span>
+          </div>
+          <input id="compare-slider" class="compare-slider" type="range" min="0" max="100" value="52" />
+          <div class="viewer-actions">
+            <button id="download-restored" type="button">下载修复图</button>
+            <button id="download-original" type="button">下载原图</button>
+            <button id="copy-citation" type="button">复制引用</button>
+            <button id="toggle-favorite" type="button">收藏</button>
+          </div>
+        </section>
+
+        <article class="detail-panel">
+          <p id="dialog-category" class="eyebrow"></p>
+          <h2 id="dialog-title"></h2>
+          <p id="dialog-description"></p>
+
+          <dl class="metadata">
+            <div>
+              <dt>时期</dt>
+              <dd id="dialog-period"></dd>
+            </div>
+            <div>
+              <dt>地点</dt>
+              <dd id="dialog-location"></dd>
+            </div>
+            <div>
+              <dt>来源</dt>
+              <dd id="dialog-source"></dd>
+            </div>
+            <div>
+              <dt>编号</dt>
+              <dd id="dialog-id"></dd>
+            </div>
+          </dl>
+
+          <section class="restore-controls" aria-label="修复参数">
+            <div class="section-title">
+              <h3>修复参数</h3>
+              <button id="reset-restore" type="button">恢复默认</button>
+            </div>
+            <label>
+              <span>对比度</span>
+              <input id="contrast-control" type="range" min="90" max="150" value="118" />
+            </label>
+            <label>
+              <span>亮度</span>
+              <input id="brightness-control" type="range" min="90" max="130" value="106" />
+            </label>
+            <label>
+              <span>色彩</span>
+              <input id="saturation-control" type="range" min="80" max="145" value="112" />
+            </label>
+            <label>
+              <span>纸色修复</span>
+              <input id="warmth-control" type="range" min="0" max="22" value="7" />
+            </label>
+          </section>
+
+          <section class="story-card">
+            <div class="section-title">
+              <h3>AI 故事解读</h3>
+              <select id="story-tone">
+                <option value="exhibition">展陈文案</option>
+                <option value="academic">学术解读</option>
+                <option value="guide">讲解词</option>
+              </select>
+            </div>
+            <p id="dialog-story"></p>
+            <div id="dialog-tags" class="tag-list"></div>
+          </section>
+
+          <section class="restoration-report">
+            <div class="section-title">
+              <h3>修复前后报告</h3>
+              <span id="report-score">AI 评估</span>
+            </div>
+            <div id="report-metrics" class="report-metrics"></div>
+          </section>
+
+          <section class="research-notes">
+            <div class="section-title">
+              <h3>研究笔记</h3>
+              <span>史料观察</span>
+            </div>
+            <div id="research-notes"></div>
+          </section>
+        </article>
+      </div>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="./app.js" defer></script>
+  </body>
+</html>
