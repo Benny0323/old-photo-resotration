@@ -671,6 +671,26 @@ select:focus {
   line-height: 1.8;
 }
 
+.site-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  width: min(1540px, calc(100% - 32px));
+  margin: 0 auto 28px;
+  padding: 22px 0 0;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+}
+
+.site-footer strong {
+  color: var(--text);
+}
+
+.site-footer p {
+  margin: 4px 0 0;
+}
+
 .photo-dialog {
   width: min(1380px, calc(100% - 24px));
   max-height: min(900px, calc(100vh - 24px));
@@ -964,6 +984,7 @@ select:focus {
   .gallery-head,
   .section-head,
   .section-title,
+  .site-footer,
   .story-lab {
     align-items: start;
     grid-template-columns: 1fr;
