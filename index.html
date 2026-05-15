@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="90 张长征老照片原图、AI 修复对比、故事解读与在线展示网站。" />
+  <meta name="description" content="90 张长征老照片原图、AI 彩色化修复对比、故事解读与在线展示网站。" />
   <title>老照片修复展示 | 90 张历史影像</title>
   <link rel="stylesheet" href="./styles.css" />
 </head>
@@ -28,7 +28,7 @@
       <p class="eyebrow">Historical Photo Restoration Archive</p>
       <h1>南京大学 × 东南大学老照片 AI 修复</h1>
       <p>
-        面向历史影像保护、数字人文展示与智能图像修复的在线展陈平台。系统收录 90 张珍贵老照片，提供原图浏览、AI 增强修复、对比滑杆、故事解读、修复图下载与收藏功能。
+        面向历史影像保护、数字人文展示与智能图像修复的在线展陈平台。系统收录 90 张珍贵老照片，提供原图浏览、AI 增强修复、黑白转彩色预览、对比滑杆、故事解读、彩色修复图下载与收藏功能。
       </p>
       <div class="hero__actions">
         <a href="#gallery" class="primary-action">浏览 90 张图片</a>
@@ -74,14 +74,14 @@
           <span>东南大学</span>
           <h3>AI 修复与工程技术支撑</h3>
           <p>
-            东南大学以工科见长，在信息科学、计算机视觉、图像处理与工程系统实现方面具备鲜明优势。本项目中侧重图像增强、交互展示、修复流程设计与在线平台搭建。
+            东南大学以工科见长，在信息科学、计算机视觉、图像处理与工程系统实现方面具备鲜明优势。本项目中侧重图像增强、AI 彩色化、交互展示、修复流程设计与在线平台搭建。
           </p>
         </article>
         <article class="wide-card">
           <span>项目愿景</span>
           <h3>让历史影像被看见、被理解、被继续研究</h3>
           <p>
-            通过“原图 - 修复图 - 史料信息 - AI 解读”的多层结构，项目希望建立一个兼具学术性、科技感与公众传播力的红色历史影像展示样板，为后续更大规模的历史照片修复与数字档案建设提供参考。
+            通过“原图 - 彩色修复图 - 史料信息 - AI 解读”的多层结构，项目希望建立一个兼具学术性、科技感与公众传播力的红色历史影像展示样板，为后续更大规模的历史照片修复与数字档案建设提供参考。
           </p>
         </article>
       </div>
@@ -202,16 +202,16 @@
     <dialog id="photo-dialog" class="photo-dialog">
     <button class="dialog-close" type="button" aria-label="关闭">×</button>
     <div class="dialog-grid">
-      <section class="viewer-panel" aria-label="原图与修复图对比">
+      <section class="viewer-panel" aria-label="原图与彩色修复图对比">
         <div id="compare-stage" class="compare-stage">
           <img id="before-image" class="compare-image compare-image--before" alt="" />
           <img id="after-image" class="compare-image compare-image--after" alt="" />
           <span class="compare-label compare-label--before">原图</span>
-          <span class="compare-label compare-label--after">AI 修复</span>
+          <span class="compare-label compare-label--after">AI 彩色修复</span>
         </div>
         <input id="compare-slider" class="compare-slider" type="range" min="0" max="100" value="52" />
         <div class="viewer-actions">
-          <button id="download-restored" type="button">下载修复图</button>
+          <button id="download-restored" type="button">下载彩色修复图</button>
           <button id="download-original" type="button">下载原图</button>
           <button id="copy-citation" type="button">复制引用</button>
           <button id="toggle-favorite" type="button">收藏</button>
@@ -244,7 +244,7 @@
 
         <section class="restore-controls" aria-label="修复参数">
           <div class="section-title">
-            <h3>修复参数</h3>
+            <h3>修复与彩色化参数</h3>
             <button id="reset-restore" type="button">恢复默认</button>
           </div>
           <label>
@@ -262,6 +262,14 @@
           <label>
             <span>纸色修复</span>
             <input id="warmth-control" type="range" min="0" max="22" value="7" />
+          </label>
+          <label class="check-control">
+            <span>黑白转彩色</span>
+            <input id="colorize-control" type="checkbox" checked />
+          </label>
+          <label>
+            <span>彩色强度</span>
+            <input id="color-strength-control" type="range" min="0" max="100" value="42" />
           </label>
         </section>
 

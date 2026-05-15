@@ -12,6 +12,11 @@
   --green: #8fbf93;
   --shadow: 0 24px 70px rgba(0, 0, 0, 0.36);
   --restore-filter: contrast(1.18) brightness(1.06) saturate(1.12) sepia(0.07);
+  --colorize-opacity: 0.15;
+  --color-highlight: #d1bd91;
+  --color-mid: #8b7b61;
+  --color-shadow: #4e5652;
+  --color-accent: #6f8a7c;
 }
 
 * {
@@ -752,12 +757,27 @@ select:focus {
   clip-path: inset(0 calc(100% - var(--split)) 0 0);
 }
 
+.compare-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    radial-gradient(circle at 36% 42%, var(--color-accent), transparent 32%),
+    linear-gradient(135deg, var(--color-highlight), var(--color-mid) 48%, var(--color-shadow));
+  mix-blend-mode: color;
+  opacity: var(--colorize-opacity);
+  clip-path: inset(0 calc(100% - var(--split)) 0 0);
+  pointer-events: none;
+}
+
 .compare-stage::after {
   content: "";
   position: absolute;
   top: 0;
   bottom: 0;
   left: var(--split);
+  z-index: 2;
   width: 2px;
   background: var(--gold);
   box-shadow: 0 0 0 999px transparent;
@@ -766,6 +786,7 @@ select:focus {
 .compare-label {
   position: absolute;
   top: 14px;
+  z-index: 3;
   padding: 6px 9px;
   background: rgba(0, 0, 0, 0.72);
   font-size: 12px;
@@ -868,6 +889,12 @@ select:focus {
 .restore-controls input {
   padding: 0;
   accent-color: var(--gold);
+}
+
+.restore-controls .check-control input {
+  width: 20px;
+  min-height: 20px;
+  justify-self: start;
 }
 
 .tag-list {

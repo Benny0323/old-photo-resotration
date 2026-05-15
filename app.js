@@ -5,6 +5,8 @@ const DEFAULT_RESTORE = {
   brightness: 106,
   saturation: 112,
   warmth: 7,
+  colorize: true,
+  colorStrength: 42,
 };
 
 const state = {
@@ -66,6 +68,8 @@ const refs = {
   brightness: $("#brightness-control"),
   saturation: $("#saturation-control"),
   warmth: $("#warmth-control"),
+  colorize: $("#colorize-control"),
+  colorStrength: $("#color-strength-control"),
   resetRestore: $("#reset-restore"),
   downloadRestored: $("#download-restored"),
   downloadOriginal: $("#download-original"),
@@ -142,13 +146,15 @@ function bindEvents() {
     updateStory();
   });
 
-  [refs.contrast, refs.brightness, refs.saturation, refs.warmth].forEach((input) => {
+  [refs.contrast, refs.brightness, refs.saturation, refs.warmth, refs.colorize, refs.colorStrength].forEach((input) => {
     input.addEventListener("input", () => {
       state.restore = {
         contrast: Number(refs.contrast.value),
         brightness: Number(refs.brightness.value),
         saturation: Number(refs.saturation.value),
         warmth: Number(refs.warmth.value),
+        colorize: refs.colorize.checked,
+        colorStrength: Number(refs.colorStrength.value),
       };
       updateRestoreFilter();
     });
@@ -279,8 +285,9 @@ function openPhoto(photo) {
   refs.beforeImage.src = photo.originalImageUrl;
   refs.afterImage.src = photo.originalImageUrl;
   refs.beforeImage.alt = `${photo.title} 原图`;
-  refs.afterImage.alt = `${photo.title} AI 修复预览`;
+  refs.afterImage.alt = `${photo.title} AI 彩色化修复预览`;
   compareStage.style.setProperty("--split", `${refs.compareSlider.value}%`);
+  updateColorizationPreview();
 
   refs.dialogCategory.textContent = photo.category || "档案";
   refs.dialogTitle.textContent = photo.title;
@@ -332,22 +339,43 @@ function resetRestore() {
   refs.brightness.value = DEFAULT_RESTORE.brightness;
   refs.saturation.value = DEFAULT_RESTORE.saturation;
   refs.warmth.value = DEFAULT_RESTORE.warmth;
+  refs.colorize.checked = DEFAULT_RESTORE.colorize;
+  refs.colorStrength.value = DEFAULT_RESTORE.colorStrength;
   updateRestoreFilter();
-  showToast("修复参数已恢复默认");
+  showToast("修复与彩色化参数已恢复默认");
 }
 
 function updateRestoreFilter() {
   const filter = restoreFilter();
   document.documentElement.style.setProperty("--restore-filter", filter);
+  updateColorizationPreview();
   updateReport();
 }
 
+function updateColorizationPreview(photo = state.selected) {
+  const palette = colorPaletteForPhoto(photo || {});
+  const opacity = state.restore.colorize ? 0.1 + (state.restore.colorStrength / 100) * 0.36 : 0;
+  const targets = [document.documentElement, compareStage].filter(Boolean);
+  targets.forEach((target) => {
+    target.style.setProperty("--colorize-opacity", opacity.toFixed(3));
+    target.style.setProperty("--color-highlight", palette.highlight);
+    target.style.setProperty("--color-mid", palette.mid);
+    target.style.setProperty("--color-shadow", palette.shadow);
+    target.style.setProperty("--color-accent", palette.accent);
+  });
+}
+
 function restoreFilter() {
+  const colorBoost = state.restore.colorize ? state.restore.colorStrength : 0;
+  const saturation = state.restore.saturation + colorBoost * 1.15;
+  const sepia = state.restore.warmth + colorBoost * 0.45;
+  const hue = state.restore.colorize ? -8 : 0;
   return [
     `contrast(${state.restore.contrast / 100})`,
     `brightness(${state.restore.brightness / 100})`,
-    `saturate(${state.restore.saturation / 100})`,
-    `sepia(${state.restore.warmth / 100})`,
+    `saturate(${saturation / 100})`,
+    `sepia(${sepia / 100})`,
+    `hue-rotate(${hue}deg)`,
   ].join(" ");
 }
 
@@ -355,11 +383,11 @@ async function downloadRestored() {
   if (!state.selected) return;
   try {
     const blob = await createRestoredBlob(state.selected.originalImageUrl);
-    downloadBlob(blob, `${state.selected.id}-AI修复版.png`);
-    showToast("修复图已生成并开始下载");
+    downloadBlob(blob, `${state.selected.id}-AI彩色修复版.png`);
+    showToast("彩色修复图已生成并开始下载");
   } catch (error) {
     console.error(error);
-    showToast("修复图生成失败，请稍后重试");
+    showToast("彩色修复图生成失败，请稍后重试");
   }
 }
 
@@ -380,10 +408,68 @@ async function createRestoredBlob(src) {
   context.fillStyle = "#d4b66f";
   context.fillRect(0, 0, canvas.width, canvas.height);
   context.globalAlpha = 1;
+  if (state.restore.colorize && state.restore.colorStrength > 0) {
+    applySemanticColorization(context, canvas.width, canvas.height, state.selected);
+  }
 
   return new Promise((resolve, reject) => {
     canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new Error("Canvas export failed"))), "image/png", 0.95);
   });
+}
+
+function applySemanticColorization(context, width, height, photo) {
+  const strength = clamp(state.restore.colorStrength, 0, 100) / 100;
+  const palette = colorPaletteForPhoto(photo);
+  context.save();
+
+  const gradient = context.createLinearGradient(0, 0, width, height);
+  gradient.addColorStop(0, palette.highlight);
+  gradient.addColorStop(0.45, palette.mid);
+  gradient.addColorStop(1, palette.shadow);
+  context.globalCompositeOperation = "color";
+  context.globalAlpha = 0.34 * strength;
+  context.fillStyle = gradient;
+  context.fillRect(0, 0, width, height);
+
+  context.globalCompositeOperation = "soft-light";
+  context.globalAlpha = 0.18 * strength;
+  context.fillStyle = palette.warm;
+  context.fillRect(0, 0, width, height);
+
+  context.globalCompositeOperation = "color";
+  context.globalAlpha = 0.18 * strength;
+  context.fillStyle = palette.accent;
+  context.beginPath();
+  context.ellipse(width * 0.36, height * 0.44, width * 0.28, height * 0.22, -0.18, 0, Math.PI * 2);
+  context.fill();
+  context.beginPath();
+  context.ellipse(width * 0.68, height * 0.62, width * 0.24, height * 0.18, 0.22, 0, Math.PI * 2);
+  context.fill();
+
+  context.restore();
+}
+
+function colorPaletteForPhoto(photo) {
+  const text = [photo.title, photo.category, photo.location, ...(photo.tags || [])].join(" ");
+  if (/雪山|夹金山|六盘山|山/.test(text)) {
+    return { highlight: "#d9e4e7", mid: "#8da4a0", shadow: "#5b6f59", warm: "#c8b083", accent: "#7b8f6b" };
+  }
+  if (/草地|水草地|红军沟|班玛/.test(text)) {
+    return { highlight: "#d8c69c", mid: "#7e9a63", shadow: "#4f6642", warm: "#b88a55", accent: "#6f8d4e" };
+  }
+  if (/赤水|乌江|大渡河|金沙江|泸定|渡口|桥/.test(text)) {
+    return { highlight: "#d2c2a2", mid: "#5f8fa1", shadow: "#4c5f67", warm: "#b7865f", accent: "#6f9db0" };
+  }
+  if (/会址|旧址|遗址|老城|建筑|纪念碑|碉堡/.test(text)) {
+    return { highlight: "#d3bd92", mid: "#9a7d58", shadow: "#5d5145", warm: "#c49a62", accent: "#7e6b55" };
+  }
+  if (/合影|干部|人物|女|战士|朱德|斯诺|毛泽东|彭德怀|叶剑英/.test(text)) {
+    return { highlight: "#d4b18e", mid: "#856f5d", shadow: "#4d4740", warm: "#b48162", accent: "#7f594c" };
+  }
+  if (/皮包|山炮|草鞋|饭盒|水壶|野菜|骆驼|器物/.test(text)) {
+    return { highlight: "#cfb789", mid: "#8a704d", shadow: "#4f4638", warm: "#a8784e", accent: "#92724d" };
+  }
+  return { highlight: "#d1bd91", mid: "#8b7b61", shadow: "#4e5652", warm: "#b88a5e", accent: "#6f8a7c" };
 }
 
 function downloadOriginal() {
@@ -579,6 +665,11 @@ function restorationMetrics(photo) {
       label: "纸张泛黄校正",
       value: clamp(68 + Math.round(state.restore.warmth * 1.2), 58, 92),
       note: "保留历史质感并修正偏色",
+    },
+    {
+      label: "黑白转彩色",
+      value: clamp(state.restore.colorize ? 58 + Math.round(state.restore.colorStrength * 0.38) + (seed % 9) : 0, 0, 92),
+      note: state.restore.colorize ? "根据人物、地貌、建筑和器物线索生成彩色化预览" : "当前未启用黑白转彩色",
     },
     {
       label: "细节恢复程度",
