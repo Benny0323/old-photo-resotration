@@ -672,15 +672,15 @@ select:focus {
 }
 
 .site-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
   width: min(1540px, calc(100% - 32px));
   margin: 0 auto 28px;
   padding: 22px 0 0;
   border-top: 1px solid var(--line);
   color: var(--muted);
+  text-align: center;
 }
 
 .site-footer strong {
